@@ -2,11 +2,11 @@
 'use strict'
 
 var mongoose = require('mongoose');
-var Schema = mongoose.schema;
+var Schema = mongoose.Schema;
 
 var UserSchema = Schema({
     name: String,
-    username: String,
+    surname: String,
     email: String,
     password: String,
     role: String,
