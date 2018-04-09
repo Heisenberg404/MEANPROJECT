@@ -2,7 +2,7 @@
 'use strict'
 
 var mongoose = require('mongoose');
-var Schema = mongoose.schema;
+var Schema = mongoose.Schema;
 
 var AlbumSchema = Schema({
     title: String,
