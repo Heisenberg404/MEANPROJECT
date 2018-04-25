@@ -9,7 +9,46 @@ var Album = require('../models/album');
 var Song = require('../models/song');
 
 function getSong(req, res) {
-    res.status(200).send({message: "test song"});
+    var songId = req.params.id;
+    Song.findById(songId).populate({path: 'album'}).exec((err, song) => {
+        if(err) {
+            res.status(500).send({message: "server error song"});
+        }else {
+            if(!song) {
+                res.status(404).send({message: "song not found"});
+            }else {
+                res.status(200).send({song});
+            }
+        }
+    });
+}
+
+function getSongs(req, res) {
+    var albumId = req.params.album;
+    if(!albumId) {
+        var find = Song.find({}).sort('number');
+    }else {
+        var find = Song.find({album: albumId}).sort('number');
+    }
+
+    find.populate({
+        path: 'album',
+        populate: {
+            path: 'artist',
+            model: 'Artist'
+        }
+    }).exec(function(err, songs) {
+        if(err) {
+            res.status(500).send({message: "server error song"});
+        }else {
+            if(!songs) {
+                res.status(404).send({message: "songs doesn't exist"});
+            } else {
+                res.status(200).send({songs});
+            }
+        }
+    });
+
 }
 
 function saveSong(req, res) {
@@ -23,17 +62,95 @@ function saveSong(req, res) {
 
     song.save((err, songStored) => {
         if(err) {
+            console.log(err);
             res.status(500).send({message: "server error save song"});
         }else {
             if(!songStored) {
                 res.status(404).send({message: "song not saved"});
             }else {
-                res.status(200).send({songStored});
+                res.status(200).send({song: songStored});
             }
         }
     });
 }
 
+function updateSong(req, res) {
+    var songId = req.params.id;
+    var update = req.body;
+
+    Song.findByIdAndUpdate(songId, update, (err, songUpdate) => {
+        if(err) {
+            console.log(err);
+            res.status(500).send({message: "server error updating song"});
+        }else {
+            if(!songUpdate) {
+                res.status(404).send({message: "song not updated"});
+            }else {
+                res.status(200).send({song: songUpdate});
+            }
+        }
+    });
+} 
+
+function deleteSong(req, res) {
+    var songId = req.params.id;
+
+    Song.findByIdAndRemove(songId, update, (err, songRemoved) => {
+        if(err) {
+            console.log(err);
+            res.status(500).send({message: "server error deleting song"});
+        }else {
+            if(!songRemoved) {
+                res.status(404).send({message: "song not removed"});
+            }else {
+                res.status(200).send({song: songRemoved});
+            }
+        }
+    });
+} 
+
+
+function uploadFile (req, res) {
+    var songId = req.params.id;
+    var fileName = 'not upload ...';
+
+    if(req.files) {
+        var filePath = req.files.image.path;
+        var fileSplit = filePath.split('/');
+        var fileName = fileSplit[2];
+        var extSplit = fileName.split('.');
+        var fileExt = extSplit[1];
+
+        if(fileExt == 'mp3'){
+            Song.findByIdAndUpdate(songId, {file: fileName}, (err, songUpdated) => {
+                if (!songUpdated) {
+                    res.status(404).send({ message: "song not updated" });
+                  } else {
+                    res.status(200).send({ song : songUpdated });
+                  }
+            });
+        }
+    }
+}
+
+function getSongFile(req, res) {
+  var songFile = req.params.songFile;
+  var pathFile = './uploads/songs/' + songFile;
+  fs.exists(pathFile, function(exist){
+    if(exist){
+      res.sendFile(path.resolve(pathFile));
+    }else{
+      res.status(200).send({ message: "file not exist" });
+    }
+  });
+}
+
 module.exports = {
-    getSong
+    getSong,
+    getSongs,
+    saveSong,
+    updateSong,
+    deleteSong,
+    getSongFile,
+    uploadFile
 };

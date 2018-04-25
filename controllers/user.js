@@ -113,10 +113,14 @@ function uploadImage (req, res) {
                 if (!userUpdated) {
                     res.status(404).send({ message: "user not updated" });
                   } else {
-                    res.status(200).send({ user: userUpdated });
+                    res.status(200).send({ image: fileName, user: userUpdated });
                   }
             });
+        }else {
+          res.status(404).send({ message: "invalid ext" });
         }
+    }else {
+      res.status(404).send({ message: "image not upload" });
     }
 }
 
