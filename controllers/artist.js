@@ -143,7 +143,12 @@ function uploadImage (req, res) {
                     res.status(200).send({ artist : artistUpdated });
                   }
             });
-        }
+        }else {
+            res.status(404).send({ message: "invalid ext" });
+          }
+      }else {
+        res.status(404).send({ message: "image not upload" });
+      
     }
 }
 

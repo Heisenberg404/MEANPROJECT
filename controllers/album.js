@@ -131,7 +131,12 @@ function uploadImage (req, res) {
                     res.status(200).send({ album : albumUpdated });
                   }
             });
-        }
+        }else {
+            res.status(404).send({ message: "invalid ext" });
+          }
+      }else {
+        res.status(404).send({ message: "image not upload" });
+      
     }
 }
 

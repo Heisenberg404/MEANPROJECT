@@ -115,10 +115,10 @@ function uploadFile (req, res) {
     var fileName = 'not upload ...';
 
     if(req.files) {
-        var filePath = req.files.image.path;
-        var fileSplit = filePath.split('/');
+        var filePath = req.files.file.path;
+        var fileSplit = filePath.split('\\');
         var fileName = fileSplit[2];
-        var extSplit = fileName.split('.');
+        var extSplit = fileName.split('\.');
         var fileExt = extSplit[1];
 
         if(fileExt == 'mp3'){
@@ -129,7 +129,11 @@ function uploadFile (req, res) {
                     res.status(200).send({ song : songUpdated });
                   }
             });
+        } else {
+            res.status(200).send({ message: "invalid ext"  });
         }
+    } else {
+        res.status(200).send({ message: "no file"  });
     }
 }
 
