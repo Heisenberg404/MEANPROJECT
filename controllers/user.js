@@ -84,6 +84,10 @@ function updateUser(req, res) {
   var userId = req.params.id;
   var ojbUpdate = req.body;
 
+  if (userId != req.user.sub) {
+    return res.status(500).send({ message: "not enough permissions to edit" });
+  }
+
   User.findByIdAndUpdate(userId, ojbUpdate, (err, userUpdated) => {
     if (err) {
       res.status(500).send({ message: "error updating user" });
