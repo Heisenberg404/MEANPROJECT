@@ -90,13 +90,17 @@ function updateArtist(req, res) {
 function deleteArtist(req, res) {
     var artistId = req.params.id;
     Artist.findByIdAndRemove(artistId, (err, artistRemoved) => {
+        console.log("findByIdAndRemove con exito" + artistRemoved);
         if(err){
+            console.log("if error");
             res.status(500).send({message: "Error deleting artist"});
         }else{
+            console.log("else");
             if(!artistRemoved) {
+                console.log("!artistRemoved");
                 res.status(404).send({message: 'artist didn`t remove'});
             }else {
-                res.status(404).send({artistRemoved}); 
+                console.log("artistRemoved._id :: " + artistRemoved._id);
                 Album.find({artist: artistRemoved._id}).remove((err, albumRemoved) => {
                     if(err){
                         res.status(500).send({message: "Error deleting album"});
@@ -117,7 +121,7 @@ function deleteArtist(req, res) {
                             });   
                         }
                     }
-                });           
+                });    
             }
         }
     })
