@@ -63,7 +63,7 @@ function saveAlbum(req, res) {
             if (!albumStored){
                 res.status(404).send({message: 'album didn`t save'});
             }else {
-                res.status(500).send({album: albumStored});
+                res.status(200).send({album: albumStored});
             }
         }
     });
