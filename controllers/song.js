@@ -95,7 +95,7 @@ function updateSong(req, res) {
 function deleteSong(req, res) {
     var songId = req.params.id;
 
-    Song.findByIdAndRemove(songId, update, (err, songRemoved) => {
+    Song.findByIdAndRemove(songId, (err, songRemoved) => {
         if(err) {
             console.log(err);
             res.status(500).send({message: "server error deleting song"});
